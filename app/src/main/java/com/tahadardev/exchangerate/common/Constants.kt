@@ -1,5 +1,5 @@
 package com.tahadardev.exchangerate.common
 
 object Constants {
-    //TODO add the required constants
+    const val BASE_URL = "https://openexchangerates.org/api/"
 }

@@ -6,6 +6,12 @@ plugins {
     id 'kotlin-kapt'
 }
 
+def getApiKey() {
+    Properties properties = new Properties()
+    properties.load(rootProject.file("local.properties").newDataInputStream())
+    return properties.getProperty("api_key")
+}
+
 android {
     namespace 'com.tahadardev.exchangerate'
     compileSdk 33
@@ -16,6 +22,8 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "API_KEY", "\"" + getApiKey() + "\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -38,6 +46,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.6'
