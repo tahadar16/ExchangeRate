@@ -1,5 +1,7 @@
 package com.tahadardev.exchangerate.feature.currency_exchange.data.remote.dto
 
+import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.ExchangeRates
+
 data class ExchangeRateDto(
     val base: String,
     val disclaimer: String,
@@ -7,3 +9,7 @@ data class ExchangeRateDto(
     val rates: Map<String , Double>,
     val timestamp: Int
 )
+
+fun ExchangeRateDto.toExchangeRate() : ExchangeRates {
+    return ExchangeRates(rates, timestamp)
+}
