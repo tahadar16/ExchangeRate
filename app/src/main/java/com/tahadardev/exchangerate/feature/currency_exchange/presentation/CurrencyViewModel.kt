@@ -17,7 +17,7 @@ class CurrencyViewModel @Inject constructor(
     private val fetchExchangeRateUseCase: FetchExchangeRateUseCase
 ) : ViewModel() {
     private val state = mutableStateOf(CurrencyExchangeState())
-    var currencyExchangeState = state.value
+    var currencyExchangeState = state
 
     init {
         fetchCurrencies()
@@ -33,6 +33,7 @@ class CurrencyViewModel @Inject constructor(
                     )
 
                     is Resource.Success -> state.value = state.value.copy(
+                        isLoading = false,
                         currencyList = result.data ?: emptyMap()
                     )
 
@@ -53,6 +54,7 @@ class CurrencyViewModel @Inject constructor(
                     )
 
                     is Resource.Success -> state.value = state.value.copy(
+                        isLoading = false,
                         exchangeRates = result.data?.rates ?: emptyMap()
                     )
 

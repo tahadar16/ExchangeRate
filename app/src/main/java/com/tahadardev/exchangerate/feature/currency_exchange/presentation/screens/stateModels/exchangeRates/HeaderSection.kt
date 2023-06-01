@@ -48,7 +48,7 @@ fun HeaderSection(currencies: MutableList<String>) {
     val currValue by remember { mutableStateOf("") }
     var selectedCurrency by remember { mutableStateOf("USD") }
     var isDropDownExpanded by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
     val dropdownIcon = if (isDropDownExpanded) {

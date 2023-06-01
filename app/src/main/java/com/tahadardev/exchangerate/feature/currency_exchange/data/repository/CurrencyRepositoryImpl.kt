@@ -27,13 +27,10 @@ class CurrencyRepositoryImpl @Inject constructor(
                 }
                 emit(Resource.Error(message = "Unexpected error occurred"))
             } catch (error: HttpException) {
-                emit(Resource.Error(message = error.message ?: "Something went wrong"))
+                emit(Resource.Error(message = error.localizedMessage ?: "Something went wrong"))
             } catch (error: IOException) {
                 emit(
-                    Resource.Error(
-                        message = error.message
-                            ?: "Couldn't connect to the server. Check your network"
-                    )
+                    Resource.Error("Couldn't connect to the server. Check your network")
                 )
             }
         }
@@ -52,10 +49,7 @@ class CurrencyRepositoryImpl @Inject constructor(
                 emit(Resource.Error(message = error.message ?: "Something went wrong"))
             } catch (error: IOException) {
                 emit(
-                    Resource.Error(
-                        message = error.message
-                            ?: "Couldn't connect to the server. Check your network"
-                    )
+                    Resource.Error("Couldn't connect to the server. Check your network")
                 )
             }
         }

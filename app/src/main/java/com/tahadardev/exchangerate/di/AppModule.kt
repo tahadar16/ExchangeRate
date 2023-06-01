@@ -10,6 +10,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import javax.inject.Singleton
 
@@ -32,6 +33,7 @@ class AppModule {
     @Provides
     fun provideWebApi(okHttpClient: OkHttpClient) = Retrofit.Builder()
         .client(okHttpClient)
+        .addConverterFactory(MoshiConverterFactory.create())
         .baseUrl(Constants.BASE_URL)
         .build()
         .create(WebApi::class.java)
