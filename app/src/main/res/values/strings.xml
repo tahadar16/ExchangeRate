@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ExchangeRate</string>
+    <string name="enter_value">Enter value</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.tahadardev.exchangerate.feature.currency_exchange.presentation
+package com.tahadardev.exchangerate.feature.currency_exchange.presentation.screens.stateModels
 
 data class CurrencyExchangeState (
     var currencyList : Map<String , String> = emptyMap(),
