@@ -44,9 +44,13 @@ import com.tahadardev.exchangerate.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeaderSection(currencies: MutableList<String>) {
-    val currValue by remember { mutableStateOf("") }
-    var selectedCurrency by remember { mutableStateOf("USD") }
+fun HeaderSection(
+    selectedCurrency: String,
+    searchValue: String,
+    currencies: MutableList<String>,
+    onSearchValueChanged: (searchValue : String) -> Unit = {},
+    onCurrencySelected: (currency : String) -> Unit = {}
+) {
     var isDropDownExpanded by remember {
         mutableStateOf(false)
     }
@@ -64,8 +68,9 @@ fun HeaderSection(currencies: MutableList<String>) {
     ) {
         OutlinedTextField(
             placeholder = { Text(stringResource(id = R.string.enter_value)) },
-            value = currValue,
-            onValueChange = {},
+            value = searchValue,
+            maxLines = 1,
+            onValueChange = { onSearchValueChanged(it) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -110,7 +115,7 @@ fun HeaderSection(currencies: MutableList<String>) {
                             )
                         },
                         onClick = {
-                            selectedCurrency = currency
+                            onCurrencySelected(currency)
                             isDropDownExpanded = false
                         }, modifier = Modifier.background(Color.White)
                     )
@@ -123,5 +128,5 @@ fun HeaderSection(currencies: MutableList<String>) {
 @Preview(showBackground = true)
 @Composable
 fun HeaderSectionPrev() {
-    HeaderSection(mutableListOf("USD", "RS", "YN", "SRY"))
+    HeaderSection("USD", "1", mutableListOf("USD", "RS", "YN", "SRY"))
 }

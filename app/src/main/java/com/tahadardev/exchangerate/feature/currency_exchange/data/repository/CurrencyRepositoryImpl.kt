@@ -1,9 +1,7 @@
 package com.tahadardev.exchangerate.feature.currency_exchange.data.repository
 
-import androidx.compose.ui.platform.LocalContext
 import com.tahadardev.exchangerate.common.Resource
 import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.WebApi
-import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.dto.ExchangeRateDto
 import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.dto.toExchangeRate
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.ExchangeRates
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.repository.CurrencyRepository

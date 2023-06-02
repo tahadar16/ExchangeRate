@@ -15,19 +15,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CurrencyExchangeRateItem(currency : String, rate: Double) {
+fun CurrencyExchangeRateItem(currency : String, rate: String) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween) {
         Text(text = currency, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(text = "$rate", color = MaterialTheme.colorScheme.primary)
+        Text(text = rate, color = MaterialTheme.colorScheme.primary, maxLines = 1)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CurrencyExchangeRateItemPrev() {
-    CurrencyExchangeRateItem("USD",  0.1123)
+    CurrencyExchangeRateItem("USD",  "0.1123")
 }

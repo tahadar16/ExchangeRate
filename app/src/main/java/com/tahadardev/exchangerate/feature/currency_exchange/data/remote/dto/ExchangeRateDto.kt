@@ -6,7 +6,7 @@ data class ExchangeRateDto(
     val base: String,
     val disclaimer: String,
     val license: String,
-    val rates: Map<String , Double>,
+    val rates: MutableMap<String , Double>,
     val timestamp: Int
 )
 
