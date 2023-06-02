@@ -7,7 +7,7 @@ import com.tahadardev.exchangerate.common.Resource
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.FetchCurrenciesUseCase
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.FetchExchangeRateUseCase
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.UpdateExchangeRatesUseCase
-import com.tahadardev.exchangerate.feature.currency_exchange.presentation.screens.stateModels.CurrencyExchangeState
+import com.tahadardev.exchangerate.feature.currency_exchange.presentation.stateModels.CurrencyExchangeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

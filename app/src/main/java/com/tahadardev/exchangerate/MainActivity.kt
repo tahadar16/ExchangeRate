@@ -6,11 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.tahadardev.exchangerate.feature.currency_exchange.presentation.screens.stateModels.exchangeRates.ExchangeRateScreen
+import com.tahadardev.exchangerate.feature.currency_exchange.presentation.screens.exchangeRates.ExchangeRateScreen
 import com.tahadardev.exchangerate.feature.currency_exchange.presentation.ui.theme.ExchangeRateTheme
 import dagger.hilt.android.AndroidEntryPoint
 

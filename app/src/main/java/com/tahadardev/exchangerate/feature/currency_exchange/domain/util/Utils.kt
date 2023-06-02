@@ -6,7 +6,7 @@ object Utils {
 
         val userSearchValue : Double = searchValue.toDouble()
         val convertedRate :Double = userSearchValue * exchangeRate
-        
+
         return "%.2f".format(convertedRate)
     }
 }

@@ -1,4 +1,4 @@
-package com.tahadardev.exchangerate.feature.currency_exchange.presentation.screens.stateModels.exchangeRates
+package com.tahadardev.exchangerate.feature.currency_exchange.presentation.screens.exchangeRates
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
