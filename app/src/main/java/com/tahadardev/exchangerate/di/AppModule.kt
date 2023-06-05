@@ -1,14 +1,17 @@
 package com.tahadardev.exchangerate.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.tahadardev.exchangerate.BuildConfig
 import com.tahadardev.exchangerate.common.Constants
+import com.tahadardev.exchangerate.common.DataStorePreferences
 import com.tahadardev.exchangerate.feature.currency_exchange.data.local.CurrencyExchangeDatabase
 import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.WebApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -49,4 +52,9 @@ class AppModule {
             Constants.DB_NAME)
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideDataStorePref(@ApplicationContext context: Context) = DataStorePreferences(context)
+
 }

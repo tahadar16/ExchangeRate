@@ -9,5 +9,5 @@ interface CurrencyRepository {
 
     suspend fun fetchCurrencies(): Flow<Resource<List<Currency>>>
 
-    suspend fun fetchExchangeRates(): Flow<Resource<List<CurrencyRate>>>
+    suspend fun fetchExchangeRates(timeStamp : Long): Flow<Resource<List<CurrencyRate>>>
 }

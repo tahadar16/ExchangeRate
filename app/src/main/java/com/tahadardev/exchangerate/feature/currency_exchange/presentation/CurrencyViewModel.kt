@@ -3,14 +3,16 @@ package com.tahadardev.exchangerate.feature.currency_exchange.presentation
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tahadardev.exchangerate.common.DataStorePreferences
 import com.tahadardev.exchangerate.common.Resource
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.FetchCurrenciesUseCase
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.FetchExchangeRateUseCase
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.UpdateExchangeRatesUseCase
 import com.tahadardev.exchangerate.feature.currency_exchange.presentation.stateModels.CurrencyExchangeState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,14 +20,24 @@ import javax.inject.Inject
 class CurrencyViewModel @Inject constructor(
     private val fetchCurrenciesUseCase: FetchCurrenciesUseCase,
     private val fetchExchangeRateUseCase: FetchExchangeRateUseCase,
-    private val updateExchangeRatesUseCase: UpdateExchangeRatesUseCase
+    private val updateExchangeRatesUseCase: UpdateExchangeRatesUseCase,
+    private val dataStorePreferences: DataStorePreferences
 ) : ViewModel() {
     private val state = mutableStateOf(CurrencyExchangeState())
     var currencyExchangeState = state
 
     init {
-        fetchCurrencies()
-        fetchExchangeRates()
+
+        viewModelScope.launch {
+            val timestampJob = viewModelScope.async(Dispatchers.IO) {
+                return@async dataStorePreferences.timestamp.first()
+            }
+
+            val timestamp = timestampJob.await()
+
+            fetchCurrencies()
+            fetchExchangeRates(timestamp)
+        }
     }
 
     private fun fetchCurrencies() {
@@ -50,9 +62,9 @@ class CurrencyViewModel @Inject constructor(
         }
     }
 
-    private fun fetchExchangeRates() {
+    private fun fetchExchangeRates(timestamp: Long) {
         viewModelScope.launch {
-            fetchExchangeRateUseCase().collect { result ->
+            fetchExchangeRateUseCase(timestamp).collect { result ->
                 when (result) {
                     is Resource.Loading -> state.value = state.value.copy(
                         isLoading = true

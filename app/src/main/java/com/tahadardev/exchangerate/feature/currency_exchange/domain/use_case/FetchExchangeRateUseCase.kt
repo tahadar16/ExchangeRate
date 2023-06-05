@@ -9,7 +9,7 @@ import javax.inject.Inject
 class FetchExchangeRateUseCase @Inject constructor(
     private val repo: CurrencyRepository
 ) {
-    suspend operator fun invoke(): Flow<Resource<List<CurrencyRate>>> {
-        return repo.fetchExchangeRates()
+    suspend operator fun invoke(timeStamp: Long): Flow<Resource<List<CurrencyRate>>> {
+        return repo.fetchExchangeRates(timeStamp)
     }
 }

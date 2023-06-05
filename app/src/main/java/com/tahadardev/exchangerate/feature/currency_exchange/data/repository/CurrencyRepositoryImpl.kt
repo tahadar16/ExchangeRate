@@ -1,5 +1,8 @@
 package com.tahadardev.exchangerate.feature.currency_exchange.data.repository
 
+import android.util.Log
+import com.tahadardev.exchangerate.common.Constants.EXCHANGE_RATE_UPDATE_THRESHOLD
+import com.tahadardev.exchangerate.common.DataStorePreferences
 import com.tahadardev.exchangerate.common.Resource
 import com.tahadardev.exchangerate.feature.currency_exchange.data.local.CurrencyDao
 import com.tahadardev.exchangerate.feature.currency_exchange.data.local.CurrencyRateDao
@@ -15,12 +18,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
+import java.time.Duration
 import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
     private val currencyDao: CurrencyDao,
     private val currencyRateDao: CurrencyRateDao,
-    private val api: WebApi
+    private val api: WebApi,
+    private val datastore: DataStorePreferences,
 ) : CurrencyRepository {
     override suspend fun fetchCurrencies(): Flow<Resource<List<Currency>>> {
         return flow {
@@ -28,8 +33,7 @@ class CurrencyRepositoryImpl @Inject constructor(
                 emit(Resource.Loading())
                 val currencyRecords = currencyDao.getCurrencies()
                 val currencies = currencyRecords.map { it.toCurrency() }
-
-                //TODO check the timestamp thing
+                
                 if (currencies.isNotEmpty()) {
                     return@flow emit(Resource.Success(currencies))
                 }
@@ -59,15 +63,18 @@ class CurrencyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchExchangeRates(): Flow<Resource<List<CurrencyRate>>> {
+    override suspend fun fetchExchangeRates(lastExchangeRatesTimeStamp: Long): Flow<Resource<List<CurrencyRate>>> {
         return flow {
             try {
                 emit(Resource.Loading())
                 val prevExchangeRateRecords = currencyRateDao.getCurrencyRates()
                 val prevExchangeRates = prevExchangeRateRecords.map { it.toCurrencyRate() }
 
-                //TODO add check for timestamp
-                if (prevExchangeRates.isNotEmpty()) {
+                val currTimeStamp: Long = System.currentTimeMillis()
+                val timeDiff = currTimeStamp - lastExchangeRatesTimeStamp
+
+                if (prevExchangeRates.isNotEmpty() && timeDiff < EXCHANGE_RATE_UPDATE_THRESHOLD) {
+                    Log.d("TAHA", "fetchExchangeRates: Fetched from database")
                     return@flow emit(Resource.Success(prevExchangeRates))
                 }
 
@@ -75,6 +82,8 @@ class CurrencyRepositoryImpl @Inject constructor(
                 response.body()?.let { exchangeRateDto ->
                     currencyRateDao.removeCurrencyRates(prevExchangeRateRecords)
                     currencyRateDao.insertCurrencyRates(exchangeRateDto.rates.map { it.toCurrencyRateEntity() })
+                    datastore.saveTimestamp(System.currentTimeMillis())
+                    Log.d("TAHA", "fetchExchangeRates: Fetched from server end")
                     return@flow emit(
                         Resource.Success(
                             currencyRateDao.getCurrencyRates().map { it.toCurrencyRate() })
