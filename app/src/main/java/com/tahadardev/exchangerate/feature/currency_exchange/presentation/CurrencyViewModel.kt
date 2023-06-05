@@ -9,6 +9,8 @@ import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.Fet
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case.UpdateExchangeRatesUseCase
 import com.tahadardev.exchangerate.feature.currency_exchange.presentation.stateModels.CurrencyExchangeState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -68,6 +70,12 @@ class CurrencyViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onUserValueChanged(userValue : String) {
+        state.value = state.value.copy(
+            userQuery = userValue
+        )
     }
 
     fun updateExchangeRates(selectedCurrency : String) {

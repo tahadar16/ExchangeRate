@@ -9,5 +9,5 @@ data class CurrencyExchangeState(
     var isLoading: Boolean = false,
     var errorMsg: String = "",
     var selectedCurrency: String = "USD",
-    var userQuery: String = "1"
+    var userQuery: String = ""
 )

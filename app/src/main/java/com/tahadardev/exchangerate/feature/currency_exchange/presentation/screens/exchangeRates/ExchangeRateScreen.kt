@@ -29,8 +29,8 @@ fun ExchangeRateScreen(
     val state = viewModel.currencyExchangeState.value
     val currencies = state.currencyList
     val exchangeRates = state.exchangeRates
-    var selectedCurrency by remember { mutableStateOf("USD") }
-    var searchValue by remember { mutableStateOf("1") }
+    var selectedCurrency by remember { mutableStateOf(state.selectedCurrency) }
+    var userQuery by remember { mutableStateOf(state.userQuery) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (currencies.isNotEmpty() && exchangeRates.isNotEmpty()) {
@@ -38,10 +38,11 @@ fun ExchangeRateScreen(
                 item {
                     HeaderSection(
                         selectedCurrency,
-                        searchValue,
+                        userQuery,
                         currencies,
                         {
-                            searchValue = it
+                            userQuery = it
+                            viewModel.onUserValueChanged(it)
                         },
                         {
                             selectedCurrency = it.currency
@@ -56,7 +57,8 @@ fun ExchangeRateScreen(
                     val symbol = currencyRate.symbol
                     val rate = currencyRate.rate
                     val convertedRate = Utils.getConversionRate(
-                        searchValue.ifEmpty { "1" },
+                        //the formatting is done to handle the masking applied on the transformed text
+                        if (userQuery.isBlank()) "1" else "%2f".format(userQuery.toDouble() / 100),
                         rate
                     )
                     CurrencyExchangeRateItem(symbol, convertedRate)
