@@ -29,15 +29,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tahadardev.exchangerate.R
+import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.Currency
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderSection(
     selectedCurrency: String,
     searchValue: String,
-    currencies: MutableList<String>,
+    currencies: List<Currency>,
     onSearchValueChanged: (searchValue : String) -> Unit = {},
-    onCurrencySelected: (currency : String) -> Unit = {}
+    onCurrencySelected: (currency : Currency) -> Unit = {}
 ) {
     var isDropDownExpanded by remember {
         mutableStateOf(false)
@@ -96,7 +97,7 @@ fun HeaderSection(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                currency,
+                                currency.currency,
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
@@ -116,5 +117,5 @@ fun HeaderSection(
 @Preview(showBackground = true)
 @Composable
 fun HeaderSectionPrev() {
-    HeaderSection("USD", "1", mutableListOf("USD", "RS", "YN", "SRY"))
+    HeaderSection("USD", "1", listOf(Currency("USD", "US Dollar")))
 }

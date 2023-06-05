@@ -36,7 +36,7 @@ class CurrencyViewModel @Inject constructor(
 
                     is Resource.Success -> state.value = state.value.copy(
                         isLoading = false,
-                        currencyList = result.data ?: hashMapOf()
+                        currencyList = result.data ?: emptyList()
                     )
 
                     is Resource.Error -> state.value = state.value.copy(
@@ -58,7 +58,7 @@ class CurrencyViewModel @Inject constructor(
 
                     is Resource.Success -> state.value = state.value.copy(
                         isLoading = false,
-                        exchangeRates = result.data?.rates ?: hashMapOf()
+                        exchangeRates = result.data ?: emptyList()
                     )
 
                     is Resource.Error -> state.value = state.value.copy(
@@ -83,7 +83,7 @@ class CurrencyViewModel @Inject constructor(
                     is Resource.Success -> state.value = state.value.copy(
                         isLoading = false,
                         selectedCurrency = selectedCurrency,
-                        exchangeRates = result.data ?: hashMapOf()
+                        exchangeRates = result.data ?: emptyList()
                     )
 
                     is Resource.Error -> state.value = state.value.copy(

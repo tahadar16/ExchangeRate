@@ -1,15 +1,16 @@
 package com.tahadardev.exchangerate.feature.currency_exchange.domain.use_case
 
 import com.tahadardev.exchangerate.common.Resource
+import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.CurrencyRate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UpdateExchangeRatesUseCase @Inject constructor() {
     operator fun invoke(
-        exchangeRates: MutableMap<String, Double>,
+        exchangeRates: List<CurrencyRate>,
         selectedCurrency: String
-    ): Flow<Resource<MutableMap<String, Double>>> {
+    ): Flow<Resource<List<CurrencyRate>>> {
         return flow {
             try {
                 /*
@@ -18,8 +19,9 @@ class UpdateExchangeRatesUseCase @Inject constructor() {
                  *  y = 3z / 2
                  */
                 emit(Resource.Loading())
-                val selectedCurrencyRate = exchangeRates[selectedCurrency] ?: 1.00
-                exchangeRates.replaceAll { _, value -> value / selectedCurrencyRate }
+                val selectedCurrencyRate =
+                    exchangeRates.first { it.symbol == selectedCurrency }.rate
+                exchangeRates.forEach { it.rate = it.rate / selectedCurrencyRate }
                 emit(Resource.Success(exchangeRates))
             } catch (e: Exception) {
                 emit(Resource.Error(message = "Unable to convert the exchange rates"))

@@ -1,5 +1,6 @@
 package com.tahadardev.exchangerate.di
 
+import com.tahadardev.exchangerate.feature.currency_exchange.data.local.CurrencyExchangeDatabase
 import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.WebApi
 import com.tahadardev.exchangerate.feature.currency_exchange.data.repository.CurrencyRepositoryImpl
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.repository.CurrencyRepository
@@ -15,7 +16,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyRepo(api: WebApi) : CurrencyRepository {
-        return CurrencyRepositoryImpl(api)
+    fun provideCurrencyRepo(db: CurrencyExchangeDatabase, api: WebApi): CurrencyRepository {
+        return CurrencyRepositoryImpl(db.currencyDao, db.currencyRateDao, api)
     }
 }

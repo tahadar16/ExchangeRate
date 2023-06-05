@@ -8,7 +8,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,12 +39,12 @@ fun ExchangeRateScreen(
                     HeaderSection(
                         selectedCurrency,
                         searchValue,
-                        currencies.keys.toMutableList(),
+                        currencies,
                         {
                             searchValue = it
                         },
                         {
-                            selectedCurrency = it
+                            selectedCurrency = it.currency
                             viewModel.updateExchangeRates(selectedCurrency)
                         })
 
@@ -48,13 +52,14 @@ fun ExchangeRateScreen(
                 }
 
                 items(exchangeRates.size) { index ->
-                    val key = exchangeRates.keys.elementAt(index)
-                    val rate = exchangeRates[key]
+                    val currencyRate = exchangeRates[index]
+                    val symbol = currencyRate.symbol
+                    val rate = currencyRate.rate
                     val convertedRate = Utils.getConversionRate(
                         searchValue.ifEmpty { "1" },
-                        rate!!
+                        rate
                     )
-                    CurrencyExchangeRateItem(key, convertedRate)
+                    CurrencyExchangeRateItem(symbol, convertedRate)
                 }
             }
         } else if (state.errorMsg.isNotBlank()) {

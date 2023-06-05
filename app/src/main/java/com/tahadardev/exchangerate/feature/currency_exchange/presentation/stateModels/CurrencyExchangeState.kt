@@ -1,9 +1,13 @@
 package com.tahadardev.exchangerate.feature.currency_exchange.presentation.stateModels
 
-data class CurrencyExchangeState (
-    var currencyList : Map<String , String> = emptyMap(),
-    var exchangeRates : MutableMap<String , Double> = mutableMapOf(),
-    var isLoading : Boolean = false,
-    var errorMsg : String = "",
-    var selectedCurrency : String = "USD"
+import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.Currency
+import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.CurrencyRate
+
+data class CurrencyExchangeState(
+    var currencyList: List<Currency> = emptyList(),
+    var exchangeRates: List<CurrencyRate> = emptyList(),
+    var isLoading: Boolean = false,
+    var errorMsg: String = "",
+    var selectedCurrency: String = "USD",
+    var userQuery: String = "1"
 )

@@ -1,7 +1,10 @@
 package com.tahadardev.exchangerate.di
 
+import android.app.Application
+import androidx.room.Room
 import com.tahadardev.exchangerate.BuildConfig
 import com.tahadardev.exchangerate.common.Constants
+import com.tahadardev.exchangerate.feature.currency_exchange.data.local.CurrencyExchangeDatabase
 import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.WebApi
 import dagger.Module
 import dagger.Provides
@@ -11,7 +14,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -37,4 +39,14 @@ class AppModule {
         .baseUrl(Constants.BASE_URL)
         .build()
         .create(WebApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideDatabase(app: Application): CurrencyExchangeDatabase {
+        return Room.databaseBuilder(
+            app,
+            CurrencyExchangeDatabase::class.java,
+            Constants.DB_NAME)
+            .build()
+    }
 }
