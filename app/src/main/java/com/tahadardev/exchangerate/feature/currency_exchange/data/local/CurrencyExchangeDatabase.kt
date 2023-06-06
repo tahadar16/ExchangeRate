@@ -10,7 +10,6 @@ import com.tahadardev.exchangerate.feature.currency_exchange.data.local.entity.C
     entities = [CurrencyEntity::class, CurrencyRateEntity::class],
     version = 1
 )
-@TypeConverters(Converters::class)
 abstract class CurrencyExchangeDatabase : RoomDatabase() {
     abstract val currencyDao: CurrencyDao
     abstract val currencyRateDao: CurrencyRateDao
