@@ -1,5 +1,6 @@
 package com.tahadardev.exchangerate.di
 
+import android.content.Context
 import com.tahadardev.exchangerate.common.DataStorePreferences
 import com.tahadardev.exchangerate.feature.currency_exchange.data.local.CurrencyExchangeDatabase
 import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.WebApi
@@ -8,6 +9,7 @@ import com.tahadardev.exchangerate.feature.currency_exchange.domain.repository.C
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -20,8 +22,15 @@ class RepositoryModule {
     fun provideCurrencyRepo(
         db: CurrencyExchangeDatabase,
         dataStorePreferences: DataStorePreferences,
-        api: WebApi
+        api: WebApi,
+        @ApplicationContext context : Context
     ): CurrencyRepository {
-        return CurrencyRepositoryImpl(db.currencyDao, db.currencyRateDao, api, dataStorePreferences)
+        return CurrencyRepositoryImpl(
+            db.currencyDao,
+            db.currencyRateDao,
+            api,
+            dataStorePreferences,
+            context,
+        )
     }
 }

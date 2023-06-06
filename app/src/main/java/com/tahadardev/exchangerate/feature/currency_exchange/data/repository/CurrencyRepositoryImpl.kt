@@ -1,7 +1,7 @@
 package com.tahadardev.exchangerate.feature.currency_exchange.data.repository
 
-import android.util.Log
-import com.tahadardev.exchangerate.common.Constants.EXCHANGE_RATE_UPDATE_THRESHOLD
+import android.content.Context
+import com.tahadardev.exchangerate.R
 import com.tahadardev.exchangerate.common.DataStorePreferences
 import com.tahadardev.exchangerate.common.Resource
 import com.tahadardev.exchangerate.feature.currency_exchange.data.local.CurrencyDao
@@ -14,11 +14,11 @@ import com.tahadardev.exchangerate.feature.currency_exchange.data.remote.dto.toC
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.Currency
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.model.CurrencyRate
 import com.tahadardev.exchangerate.feature.currency_exchange.domain.repository.CurrencyRepository
+import com.tahadardev.exchangerate.feature.currency_exchange.domain.util.Utils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException
 import retrofit2.HttpException
-import java.time.Duration
 import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
@@ -26,6 +26,7 @@ class CurrencyRepositoryImpl @Inject constructor(
     private val currencyRateDao: CurrencyRateDao,
     private val api: WebApi,
     private val datastore: DataStorePreferences,
+    private val context: Context
 ) : CurrencyRepository {
     override suspend fun fetchCurrencies(): Flow<Resource<List<Currency>>> {
         return flow {
@@ -33,7 +34,7 @@ class CurrencyRepositoryImpl @Inject constructor(
                 emit(Resource.Loading())
                 val currencyRecords = currencyDao.getCurrencies()
                 val currencies = currencyRecords.map { it.toCurrency() }
-                
+
                 if (currencies.isNotEmpty()) {
                     return@flow emit(Resource.Success(currencies))
                 }
@@ -52,12 +53,17 @@ class CurrencyRepositoryImpl @Inject constructor(
                             currencyDao.getCurrencies().map { it.toCurrency() })
                     )
                 }
-                emit(Resource.Error(message = "Unexpected error occurred"))
+                emit(Resource.Error(message = context.getString(R.string.unexpected_error)))
             } catch (error: HttpException) {
-                emit(Resource.Error(message = error.localizedMessage ?: "Something went wrong"))
+                emit(
+                    Resource.Error(
+                        message = error.localizedMessage
+                            ?: context.getString(R.string.something_went_wrong)
+                    )
+                )
             } catch (error: IOException) {
                 emit(
-                    Resource.Error("Couldn't connect to the server. Check your network")
+                    Resource.Error(context.getString(R.string.could_not_connect))
                 )
             }
         }
@@ -70,11 +76,10 @@ class CurrencyRepositoryImpl @Inject constructor(
                 val prevExchangeRateRecords = currencyRateDao.getCurrencyRates()
                 val prevExchangeRates = prevExchangeRateRecords.map { it.toCurrencyRate() }
 
-                val currTimeStamp: Long = System.currentTimeMillis()
-                val timeDiff = currTimeStamp - lastExchangeRatesTimeStamp
+                val isThresholdCrossed =
+                    Utils.isExchangeRatesTimeStampThresholdCrossed(lastExchangeRatesTimeStamp)
 
-                if (prevExchangeRates.isNotEmpty() && timeDiff < EXCHANGE_RATE_UPDATE_THRESHOLD) {
-                    Log.d("TAHA", "fetchExchangeRates: Fetched from database")
+                if (prevExchangeRates.isNotEmpty() && !isThresholdCrossed) {
                     return@flow emit(Resource.Success(prevExchangeRates))
                 }
 
@@ -83,22 +88,22 @@ class CurrencyRepositoryImpl @Inject constructor(
                     currencyRateDao.removeCurrencyRates(prevExchangeRateRecords)
                     currencyRateDao.insertCurrencyRates(exchangeRateDto.rates.map { it.toCurrencyRateEntity() })
                     datastore.saveTimestamp(System.currentTimeMillis())
-                    Log.d("TAHA", "fetchExchangeRates: Fetched from server end")
                     return@flow emit(
                         Resource.Success(
                             currencyRateDao.getCurrencyRates().map { it.toCurrencyRate() })
                     )
                 }
-                emit(
-                    Resource.Error(message = "Unexpected error occurred")
-                )
+                emit(Resource.Error(message = context.getString(R.string.unexpected_error)))
             } catch (error: HttpException) {
                 emit(
-                    Resource.Error(message = error.message ?: "Something went wrong")
+                    Resource.Error(
+                        message = error.localizedMessage
+                            ?: context.getString(R.string.something_went_wrong)
+                    )
                 )
             } catch (error: IOException) {
                 emit(
-                    Resource.Error("Couldn't connect to the server. Check your network")
+                    Resource.Error(context.getString(R.string.could_not_connect))
                 )
             }
         }

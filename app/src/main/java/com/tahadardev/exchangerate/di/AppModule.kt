@@ -36,7 +36,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideWebApi(okHttpClient: OkHttpClient) = Retrofit.Builder()
+    fun provideWebApi(okHttpClient: OkHttpClient): WebApi = Retrofit.Builder()
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create())
         .baseUrl(Constants.BASE_URL)
